@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "680388871947",
+    "firebase_url": "https://commune-cad23.firebaseio.com",
+    "project_id": "commune-cad23",
+    "storage_bucket": "commune-cad23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680388871947:android:2da1f6617a0f703609040e",
+        "android_client_info": {
+          "package_name": "com.example.commune"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "680388871947-ugtkg3ks69gqfjurebjs4vqphtv4qino.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD07PWYUzKh8zapt5LUlThkMAkBA75Ib6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "680388871947-ugtkg3ks69gqfjurebjs4vqphtv4qino.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
