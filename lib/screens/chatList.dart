@@ -61,7 +61,7 @@ class _ChatListState extends State<ChatList> {
         actions: [
           GestureDetector(
             onTap: () {
-              HelperFunctions.saveUserLoggedInSharedPreference(false);
+              //HelperFunctions.saveUserLoggedInSharedPreference(false);
               authMethods.signOut();
               Navigator.pushReplacement(context, MaterialPageRoute(
                 builder: (context) => Authenticate()

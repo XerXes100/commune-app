@@ -4,7 +4,6 @@ import 'package:commune/screens/chatList.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -29,14 +28,20 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     getLoggedInState();
     print('$userIsLoggedIn');
-    getUserInfo();
+    //getUserInfo();
     super.initState();
   }
 
   getLoggedInState () async{
     await HelperFunctions.getUserLoggedInSharedPreference().then((value) {
       setState(() {
-        userIsLoggedIn = value;
+        if (value == null) {
+          userIsLoggedIn = false;
+        }
+        else {
+          userIsLoggedIn = value;
+        }
+        //print(value);
       });
     });
   }
@@ -66,6 +71,4 @@ class _BlankState extends State<Blank> {
     return Container();
   }
 }
-
-
 
