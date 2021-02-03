@@ -1,4 +1,4 @@
-# commune
+# Commune
 
 A new Flutter application.
 
