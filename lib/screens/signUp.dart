@@ -29,6 +29,9 @@ class _SignUpState extends State<SignUp> {
 
   signMeUp() {
     if (formKey.currentState.validate()) {
+
+      dataBaseMethods.addUserToGroup(userNameText.text);
+
       setState(() {
         loading = true;
       });

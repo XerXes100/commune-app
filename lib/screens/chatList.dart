@@ -1,11 +1,17 @@
 import 'package:commune/helper/authenticate.dart';
 import 'package:commune/helper/constants.dart';
 import 'package:commune/helper/helperfunction.dart';
+
 import 'package:commune/screens/conversationScreen.dart';
+import 'package:commune/screens/groupConversationScreen.dart';
 import 'package:commune/screens/search.dart';
+
 import 'package:commune/services/auth.dart';
 import 'package:commune/services/database.dart';
+
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class ChatList extends StatefulWidget {
   @override
@@ -20,10 +26,14 @@ class _ChatListState extends State<ChatList> {
   Stream chatRoomsStream;
 
   Widget ChatRoomsList() {
+    dynamic user = FirebaseAuth.instance.currentUser;
+    print('Current user email: ${user.email}');
     return StreamBuilder(
       stream: chatRoomsStream,
       builder: (context, snapshot) {
         return snapshot.hasData ? ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
           itemCount: snapshot.data.documents.length,
           itemBuilder: (context, index) {
             return ChatRoomsTile(
@@ -53,6 +63,7 @@ class _ChatListState extends State<ChatList> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,9 +71,10 @@ class _ChatListState extends State<ChatList> {
         title: Text('Commune'),
         actions: [
           GestureDetector(
-            onTap: () {
+            onTap: () async {
               HelperFunctions.saveUserLoggedInSharedPreference(false);
               authMethods.signOut();
+              //logOutFacebook();
               Navigator.pushReplacement(context, MaterialPageRoute(
                 builder: (context) => Authenticate()
               ));
@@ -74,7 +86,12 @@ class _ChatListState extends State<ChatList> {
           ),
         ],
       ),
-      body: ChatRoomsList(),
+      body: Column(
+        children: [
+          GroupChatTile(),
+          ChatRoomsList()
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.search),
         onPressed: () {
@@ -125,6 +142,44 @@ class ChatRoomsTile extends StatelessWidget {
     );
   }
 }
+
+class GroupChatTile extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => GroupConversationScreen()
+        ));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        color: Colors.grey[200],
+        child: Row(
+          children: [
+            Container(
+              height: 40,
+              width: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(40)
+              ),
+              child: Text('W'),
+            ),
+            SizedBox(width: 8),
+            Text('Welcome to the community.',
+                style: TextStyle(
+                fontSize: 17
+            ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 
 

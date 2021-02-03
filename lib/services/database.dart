@@ -8,12 +8,17 @@ class DataBaseMethods {
   }
 
   getUserByUserEmail (String userEmail) async {
-    return await  FirebaseFirestore.instance.collection('users')
+    return await FirebaseFirestore.instance.collection('users')
         .where('email', isEqualTo: userEmail).get();
   }
 
   uploadUserInfo (userMap) {
     FirebaseFirestore.instance.collection('users').add(userMap);
+  }
+
+  addUserToGroup (String username) {
+    FirebaseFirestore.instance.collection('GroupChatRoom').doc('all_users')
+        .updateData({"users": FieldValue.arrayUnion([username])});
   }
 
   createChatRoom (String chatRoomId, chatRoomMap) {
@@ -30,8 +35,21 @@ class DataBaseMethods {
         .snapshots();
   }
 
+  getGroupConversationMessages () async {
+    return await FirebaseFirestore.instance.collection('GroupChatRoom').doc(
+        'all_users')
+        .collection('groupChats')
+        .orderBy('time')
+        .snapshots();
+  }
+
   addConversationMessages (String chatRoomId, messageMap) {
     FirebaseFirestore.instance.collection('ChatRoom').doc(chatRoomId).collection('chats')
+        .add(messageMap).catchError((e){print(e.toString());});
+  }
+
+  addGroupConversationMessages (messageMap) {
+    FirebaseFirestore.instance.collection('GroupChatRoom').doc('all_users').collection('groupChats')
         .add(messageMap).catchError((e){print(e.toString());});
   }
 

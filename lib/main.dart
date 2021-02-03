@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:commune/helper/authenticate.dart';
 import 'package:commune/helper/helperfunction.dart';
 import 'package:commune/screens/chatList.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 
 
 void main() async {
@@ -33,7 +35,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  getLoggedInState () async{
+  getLoggedInState () async {
     await HelperFunctions.getUserLoggedInSharedPreference().then((value) {
       setState(() {
         if (value == null) {

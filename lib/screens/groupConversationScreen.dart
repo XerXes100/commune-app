@@ -1,41 +1,38 @@
+import 'package:flutter/material.dart';
 import 'package:commune/helper/constants.dart';
 import 'package:commune/services/database.dart';
 import 'package:commune/widgets/widget.dart';
-import 'package:flutter/material.dart';
 
-class ConversationScreen extends StatefulWidget {
-
-  final String chatRoomId;
-  ConversationScreen({this.chatRoomId});
-
+class GroupConversationScreen extends StatefulWidget {
   @override
-  _ConversationScreenState createState() => _ConversationScreenState();
-
+  _GroupConversationScreenState createState() => _GroupConversationScreenState();
 }
 
-class _ConversationScreenState extends State<ConversationScreen> {
+class _GroupConversationScreenState extends State<GroupConversationScreen> {
 
   DataBaseMethods dataBaseMethods = new DataBaseMethods();
   TextEditingController messageController = new TextEditingController();
 
   Stream chatMessagesStream;
 
-  Widget ChatMessageList() {
+  Widget GroupChatMessageList() {
     return StreamBuilder(
       stream: chatMessagesStream,
       builder: (context, snapshot) {
         return snapshot.hasData ? ListView.builder(
           itemCount: snapshot.data.documents.length,
           itemBuilder: (context, index) {
-            return MessageTile(snapshot.data.documents[index].data()['message'],
-                snapshot.data.documents[index].data()['sentBy'] == Constants.myName);
+            return GroupMessageTile(snapshot.data.documents[index].data()['message'],
+                snapshot.data.documents[index].data()['sentBy'] == Constants.myName,
+                snapshot.data.documents[index].data()['sentBy']
+            );
           },
         ) : Container();
       },
     );
   }
 
-  sendMessage () {
+  sendGroupMessage () {
     if (messageController.text.isNotEmpty) {
       Map<String, dynamic> messageMap = {
         'message' : messageController.text,
@@ -43,15 +40,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
         'time' : DateTime.now().millisecondsSinceEpoch
       };
 
-      dataBaseMethods.addConversationMessages(widget.chatRoomId, messageMap);
+      dataBaseMethods.addGroupConversationMessages(messageMap);
       messageController.text = '';
     }
   }
 
-  @override
   void initState() {
 
-    dataBaseMethods.getConversationMessages(widget.chatRoomId).then((value)
+    dataBaseMethods.getGroupConversationMessages().then((value)
     {
       setState(() {
         chatMessagesStream = value;
@@ -60,7 +56,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +64,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       body: Container(
         child: Stack(
           children: [
-            ChatMessageList(),
+            GroupChatMessageList(),
             Container(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -90,16 +86,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        sendMessage();
+                        sendGroupMessage();
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blueGrey,
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                        padding: EdgeInsets.all(12),
-                        child: Text('Send'),
+                      child: IconButton(
+                        icon: Icon(Icons.send),
                       ),
+                      // child: Container(
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.blueGrey,
+                      //     borderRadius: BorderRadius.circular(40),
+                      //   ),
+                      //   padding: EdgeInsets.all(12),
+                      //   child: Text('Send'),
+                      // ),
                     )
                   ],
                 ),
@@ -112,11 +111,12 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 }
 
-class MessageTile extends StatelessWidget {
+class GroupMessageTile extends StatelessWidget {
 
   final String message;
   final bool isSentByMe;
-  MessageTile(this.message, this.isSentByMe);
+  final String sentBy;
+  GroupMessageTile(this.message, this.isSentByMe, this.sentBy);
 
   @override
   Widget build(BuildContext context) {
@@ -127,26 +127,37 @@ class MessageTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
         decoration: BoxDecoration(
-          color: isSentByMe ? Colors.blueAccent : Colors.grey,
-          borderRadius: isSentByMe ? BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-            bottomLeft: Radius.circular(10)
-          ) : BorderRadius.only (
-              bottomRight: Radius.circular(10),
-              topRight: Radius.circular(10),
-              bottomLeft: Radius.circular(10)
-          )
+            color: isSentByMe ? Colors.blueAccent : Colors.grey,
+            borderRadius: isSentByMe ? BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10)
+            ) : BorderRadius.only (
+                bottomRight: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10)
+            )
         ),
-        child: Text(
-          '$message',
-          style: TextStyle(
-            fontSize: 17,
-          ),
+        child: Column(
+          children:[
+            if (isSentByMe != true) ... {
+              Text(
+                '$sentBy',
+                style: TextStyle(
+                    fontSize: 13.5,
+                    color: Colors.amberAccent
+                ),
+              )
+            },
+            Text(
+              '$message',
+              style: TextStyle(
+                fontSize: 17,
+              )
+            )
+          ]
         ),
       ),
     );
   }
 }
-
-

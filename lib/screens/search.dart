@@ -31,6 +31,7 @@ class _SearchScreenState extends State<SearchScreen> {
   createChatRoomAndStartConversation ({String userName}) {
 
     if (userName != Constants.myName){
+
       String chatRoomId = getChatRoomId(userName, Constants.myName);
 
       List<String> users = [userName, Constants.myName];

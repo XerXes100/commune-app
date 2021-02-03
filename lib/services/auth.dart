@@ -1,5 +1,7 @@
 import 'package:commune/modal/userGet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class AuthMethods {
 
@@ -7,6 +9,16 @@ class AuthMethods {
 
   UserGet _userFromFbUser (User fbUser) {
     return fbUser != null ? UserGet(userId: fbUser.uid) : null;
+  }
+
+  Future signInWithFacebook (accessToken) async {
+    try {
+      AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.token);
+      User firebaseUser = (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+      return _userFromFbUser(firebaseUser);
+    } catch(e) {
+      print(e.toString());
+    }
   }
 
   Future signInWithEmailAndPassword (String email, String password) async
