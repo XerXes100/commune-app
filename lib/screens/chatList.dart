@@ -73,8 +73,11 @@ class _ChatListState extends State<ChatList> {
           GestureDetector(
             onTap: () async {
               HelperFunctions.saveUserLoggedInSharedPreference(false);
+              print("Login Through Facebook: ${Constants.loginThroughFacebook}");
+              if (Constants.loginThroughFacebook == true) {
+                await authMethods.logOutFacebook();
+              }
               authMethods.signOut();
-              //logOutFacebook();
               Navigator.pushReplacement(context, MaterialPageRoute(
                 builder: (context) => Authenticate()
               ));

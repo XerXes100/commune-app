@@ -84,22 +84,28 @@ class _GroupConversationScreenState extends State<GroupConversationScreen> {
                           ),
                         )
                     ),
-                    GestureDetector(
-                      onTap: () {
+                    IconButton(
+                      icon: Icon(Icons.send),
+                      onPressed: () {
                         sendGroupMessage();
                       },
-                      child: IconButton(
-                        icon: Icon(Icons.send),
-                      ),
+                    ),
+                    //
                       // child: Container(
-                      //   decoration: BoxDecoration(
+                      //   GestureDetector(
+              //                     //   onTap: () {
+              //                     //     sendGroupMessage();
+              //                     //   },
+              //                     //   child: IconButton(
+              //                     //     icon: Icon(Icons.send),
+              //                     //   ),decoration: BoxDecoration(
                       //     color: Colors.blueGrey,
                       //     borderRadius: BorderRadius.circular(40),
                       //   ),
                       //   padding: EdgeInsets.all(12),
                       //   child: Text('Send'),
                       // ),
-                    )
+                    // )
                   ],
                 ),
               ),

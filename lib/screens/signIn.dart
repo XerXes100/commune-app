@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:commune/widgets/widget.dart';
 import 'package:commune/helper/helperfunction.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -63,7 +63,9 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  signInWithFacebook (var profile) {
+  signInThroughFacebook () async {
+
+    var profile = await authMethods.loginWithFacebook();
 
     setState(() {
       loading = true;
@@ -73,22 +75,18 @@ class _SignInState extends State<SignIn> {
     HelperFunctions.saveUserNameSharedPreference(profile['name']);
     HelperFunctions.saveUserEmailSharedPreference(profile['email']);
 
-    // dataBaseMethods.getUserByUserEmail(profile['email']).then((val) {
-    //   if (val == null) {
-    //     Map<String, String> userInfoMap = {
-    //       'name' : profile['name'],
-    //       'email' : profile['email']
-    //     };
-    //     dataBaseMethods.uploadUserInfo(userInfoMap);
-    //   }
-    // });
+    dataBaseMethods.getUserByUserEmail(profile['email']).then((val) {
+      if (val.docs.length == 0) {
+        print("No such email exists");
+        Map<String, String> userInfoMap = {
+          'name' : profile['name'],
+          'email' : profile['email']
+        };
+        dataBaseMethods.uploadUserInfo(userInfoMap);
+      }
+    });
 
-    Map<String, String> userInfoMap = {
-      'name' : profile['name'],
-      'email' : profile['email']
-    };
-
-    dataBaseMethods.uploadUserInfo(userInfoMap);
+    //dataBaseMethods.uploadUserInfo(userInfoMap);
 
     HelperFunctions.saveUserLoggedInSharedPreference(true);
 
@@ -96,51 +94,6 @@ class _SignInState extends State<SignIn> {
         builder: (context) => ChatList()
     ));
 
-  }
-
-  static final FacebookLogin facebookSignIn = new FacebookLogin();
-
-  logOutFacebook() async {
-    await facebookSignIn.logOut();
-  }
-
-  loginWithFacebook() async {
-    final FacebookLoginResult result =
-        await facebookSignIn.logIn(['email']);
-
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        final FacebookAccessToken accessToken = result.accessToken;
-        print('''
-         Logged in!
-         
-         Token: ${accessToken.token}
-         User id: ${accessToken.userId}
-         Expires: ${accessToken.expires}
-         Permissions: ${accessToken.permissions}
-         Declined permissions: ${accessToken.declinedPermissions}
-         
-         ''');
-
-        final graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=${accessToken.token}');
-
-        final profile = jsonDecode(graphResponse.body);
-
-        await authMethods.signInWithFacebook(accessToken);
-
-        signInWithFacebook(profile);
-        break;
-
-      case FacebookLoginStatus.cancelledByUser:
-        print('Login cancelled by the user.');
-        break;
-
-      case FacebookLoginStatus.error:
-        print('Something went wrong with the login process.\n'
-            'Here\'s the error Facebook gave us: ${result.errorMessage}');
-        break;
-    }
   }
 
   @override
@@ -240,7 +193,7 @@ class _SignInState extends State<SignIn> {
                   Buttons.Facebook,
 
                   onPressed: () {
-                    loginWithFacebook();
+                    signInThroughFacebook();
                   },
                 ),
                 // Row(
