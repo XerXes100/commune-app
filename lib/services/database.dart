@@ -18,7 +18,7 @@ class DataBaseMethods {
 
   addUserToGroup (String username) {
     FirebaseFirestore.instance.collection('GroupChatRoom').doc('all_users')
-        .updateData({"users": FieldValue.arrayUnion([username])});
+        .update({"users": FieldValue.arrayUnion([username])});
   }
 
   createChatRoom (String chatRoomId, chatRoomMap) {

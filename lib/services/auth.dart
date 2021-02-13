@@ -24,7 +24,7 @@ class AuthMethods {
 
   Future signInWithFacebook (accessToken) async {
     try {
-      AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.token);
+      AuthCredential credential = FacebookAuthProvider.credential(accessToken.token);
       User firebaseUser = (await FirebaseAuth.instance.signInWithCredential(credential)).user;
       return _userFromFbUser(firebaseUser);
     } catch(e) {
