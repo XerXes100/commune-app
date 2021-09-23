@@ -55,7 +55,6 @@ class _SignUpState extends State<SignUp> {
           builder: (context) => ChatList()
         ));
       });
-      
     }
   }
 
