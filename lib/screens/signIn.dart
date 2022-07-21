@@ -37,6 +37,7 @@ class _SignInState extends State<SignIn> {
   TextEditingController passwordText = new TextEditingController();
 
   signIn() {
+
     if (formKey.currentState.validate()) {
 
       HelperFunctions.saveUserEmailSharedPreference(emailText.text);
@@ -61,6 +62,7 @@ class _SignInState extends State<SignIn> {
         }
       });
     }
+
   }
 
   signInThroughFacebook () async {
